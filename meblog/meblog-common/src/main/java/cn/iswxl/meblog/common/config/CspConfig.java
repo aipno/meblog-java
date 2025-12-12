@@ -34,22 +34,22 @@ public class CspConfig {
         @Override
         protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
             // 设置CSP头，限制脚本来源，只允许同源脚本执行
-            response.setHeader("Content-Security-Policy", 
+            response.setHeader("Content-Security-Policy",
                     "default-src 'self'; " +
-                    "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
-                    "style-src 'self' 'unsafe-inline'; " +
-                    "img-src 'self' data: https:; " +
-                    "font-src 'self' data:; " +
-                    "connect-src 'self'; " +
-                    "frame-ancestors 'none'; " +
-                    "form-action 'self';");
+                            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+                            "style-src 'self' 'unsafe-inline'; " +
+                            "img-src 'self' data: https:; " +
+                            "font-src 'self' data:; " +
+                            "connect-src 'self'; " +
+                            "frame-ancestors 'none'; " +
+                            "form-action 'self';");
 
             // 设置X-Content-Type-Options头，防止MIME类型嗅探
             response.setHeader("X-Content-Type-Options", "nosniff");
-            
+
             // 设置X-Frame-Options头，防止点击劫持
             response.setHeader("X-Frame-Options", "DENY");
-            
+
             // 设置X-XSS-Protection头，启用浏览器内置XSS保护
             response.setHeader("X-XSS-Protection", "1; mode=block");
 

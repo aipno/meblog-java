@@ -11,7 +11,7 @@ import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,8 +27,8 @@ public class MarkdownHelper {
      */
     private final static HtmlRenderer HTML_RENDERER;
 
-    /**
-     * 初始化
+    /*
+      初始化
      */
     static {
         // Markdown 拓展
@@ -50,8 +50,6 @@ public class MarkdownHelper {
     /**
      * 将 Markdown 转换成 HTML
      *
-     * @param markdown
-     * @return
      */
     public static String convertMarkdown2Html(String markdown) {
         Node document = PARSER.parse(markdown);
@@ -62,12 +60,10 @@ public class MarkdownHelper {
 
     /**
      * 清洗HTML，移除潜在的XSS攻击载体
-     * @param html
-     * @return
      */
     private static String sanitizeHtml(String html) {
         // 创建白名单，只允许安全的HTML标签和属性
-        Whitelist whitelist = new Whitelist()
+        Safelist safelist = new Safelist()
                 // 基本标签
                 .addTags("a", "b", "blockquote", "br", "caption", "cite", "code", "col",
                         "colgroup", "dd", "del", "div", "dl", "dt", "em", "h1", "h2", "h3", "h4", "h5", "h6",
@@ -134,12 +130,14 @@ public class MarkdownHelper {
                 .addProtocols("img", "src", "http", "https");
 
         // 使用自定义的白名单清洗HTML
-        return Jsoup.clean(html, whitelist);
+        return Jsoup.clean(html, safelist);
     }
 
     public static void main(String[] args) {
-        String markdown = "# 一级标题\n" +
-                "## 二级标题\n";
+        String markdown = """
+                # 一级标题
+                ## 二级标题
+                """;
         System.out.println(MarkdownHelper.convertMarkdown2Html(markdown));
     }
 
