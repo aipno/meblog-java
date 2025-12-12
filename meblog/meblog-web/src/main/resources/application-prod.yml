@@ -1,0 +1,91 @@
+spring:
+  datasource:
+    # 指定数据库驱动类的完整类名，这里使用的是 MySQL 数据库的驱动类。
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 数据库连接的URL，指向本地的MySQL数据库，端口是3306，数据库名是meblog，同时配置了一系列参数，如使用Unicode编码、字符编码为UTF-8、自动重连、不使用SSL、对零时间进行转换等。
+    url: jdbc:mysql://{ MYSQL_HOST }:3306/meblog?useUnicode=true&characterEncoding=UTF-8
+    username: { MYSQL_USER }
+    password: { MYSQL_PASSWORD }
+    # 数据库链接池这块，我们使用的 Spring Boot 默认的 HikariCP，它是一个高性能的连接池实现 , 同时，它号称是速度最快的连接池：
+    hikari:
+      # Hikari连接池中最小空闲连接数。
+      minimum-idle: 5
+      # Hikari连接池中允许的最大连接数。
+      maximum-pool-size: 20
+      # 连接是否自动提交事务。
+      auto-commit: true
+      # 连接在连接池中闲置的最长时间，超过这个时间会被释放。
+      idle-timeout: 30000
+      # 连接池的名字。
+      pool-name: Meblog-HikariCP
+      # 连接在连接池中的最大存活时间，超过这个时间会被强制关闭。
+      max-lifetime: 1800000
+      # 获取连接的超时时间。
+      connection-timeout: 30000
+      # 用于测试连接是否可用的SQL查询，这里使用的是SELECT 1，表示执行这个查询来测试连接。
+      connection-test-query: SELECT 1
+
+  redis:
+    host: { REDIS_HOST }
+    port: 6379
+    # Redis服务器连接密码（默认为空）
+    password: { REDIS_PASSWORD }
+    #连接超时时间（毫秒）
+    timeout: 3000
+    # 连接池最大连接数（使用负值表示没有限制）
+    pool.maxActive: 100
+    # 连接池最大阻塞等待时间（使用负值表示没有限制）
+    pool.maxWait: -1
+    # 连接池中的最大空闲连接
+    pool.maxIdle: 8
+    # 连接池中的最小空闲连接
+    pool.minIdle: 0
+
+  mail:
+    # SMTP服务器地址
+    host: smtp.qq.com
+    # 端口（465/587）
+    port: 465
+    email: { YOUR_EMAIL }
+    username: { YOUR_NAME }
+    # 授权码（非邮箱登录密码）
+    password: { EMAIL_PASSWORD }
+    # 验证码有效期
+    expiration: 300
+    properties:
+      mail:
+        smtp:
+          # 启用认证
+          auth: true
+          # 启用TLS加密
+          starttls:
+            enable: true
+          # 根据服务器要求配置SSL
+          ssl:
+            enable: true
+    # 协议（smtp/smtps）
+    protocol: smtps
+    # 启动时验证连接
+    test-connection: true
+
+  security:
+    user:
+      name: admin
+      password: 123456
+
+#=================================================================
+# minio
+#=================================================================
+minio:
+  endpoint: { MINIO_HOST }
+  # minio 外部访问地址(无需配置)
+  external: { DEFAULT_EXTERNAL_URL }
+  accessKey: { ACCESS_KEY }
+  secretKey: { SECRET_KEY }
+  bucketName: meblog
+
+#=================================================================
+# Lucene 全文检索
+#=================================================================
+lucene:
+  indexDir: /home/aipno/code/meblog-java/meblog/meblog-search/indexDir # lucene 索引存放的位置
