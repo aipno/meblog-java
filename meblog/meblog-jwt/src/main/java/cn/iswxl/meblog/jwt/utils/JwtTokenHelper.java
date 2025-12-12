@@ -3,6 +3,7 @@ package cn.iswxl.meblog.jwt.utils;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,7 +15,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
+@Slf4j
 @Component
 public class JwtTokenHelper implements InitializingBean {
 
@@ -41,7 +44,6 @@ public class JwtTokenHelper implements InitializingBean {
 
     /**
      * 解码配置文件中配置的 Base 64 编码 key 为秘钥
-     * @param base64Key
      */
     @Value("${jwt.secret}")
     public void setBase64Key(String base64Key) {
@@ -50,7 +52,6 @@ public class JwtTokenHelper implements InitializingBean {
 
     /**
      * 初始化 JwtParser
-     * @throws Exception
      */
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -62,15 +63,17 @@ public class JwtTokenHelper implements InitializingBean {
 
     /**
      * 生成 Token
-     * @param username
-     * @return
      */
     public String generateToken(String username) {
         LocalDateTime now = LocalDateTime.now();
-        // Token 一个小时后失效
-        LocalDateTime expireTime = now.plusHours(tokenExpireTime);
+        // Token 30分钟后失效
+        LocalDateTime expireTime = now.plusMinutes(tokenExpireTime);
+        
+        // 生成JWT ID
+        String jti = UUID.randomUUID().toString();
 
         return Jwts.builder().setSubject(username)
+                .setId(jti)
                 .setIssuer(issuer)
                 .setIssuedAt(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()))
                 .setExpiration(Date.from(expireTime.atZone(ZoneId.systemDefault()).toInstant()))
@@ -80,8 +83,6 @@ public class JwtTokenHelper implements InitializingBean {
 
     /**
      * 解析 Token
-     * @param token
-     * @return
      */
     public Jws<Claims> parseToken(String token) {
         try {
@@ -95,16 +96,14 @@ public class JwtTokenHelper implements InitializingBean {
 
     /**
      * 生成一个 Base64 的安全秘钥
-     * @return
      */
     private static String generateBase64Key() {
         // 生成安全秘钥
         Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
         // 将密钥进行 Base64 编码
-        String base64Key = Base64.getEncoder().encodeToString(secretKey.getEncoded());
 
-        return base64Key;
+        return Base64.getEncoder().encodeToString(secretKey.getEncoded());
     }
 
     public static void main(String[] args) {
@@ -114,8 +113,6 @@ public class JwtTokenHelper implements InitializingBean {
 
     /**
      * 校验 Token 是否可用
-     * @param token
-     * @return
      */
     public void validateToken(String token) {
         jwtParser.parseClaimsJws(token);
@@ -123,16 +120,26 @@ public class JwtTokenHelper implements InitializingBean {
 
     /**
      * 解析 Token 获取用户名
-     * @param token
-     * @return
      */
     public String getUsernameByToken(String token) {
         try {
             Claims claims = jwtParser.parseClaimsJws(token).getBody();
-            String username = claims.getSubject();
-            return username;
+            return claims.getSubject();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("解析 Token 获取用户名失败", e);
+        }
+        return null;
+    }
+    
+    /**
+     * 解析 Token 获取 JWT ID
+     */
+    public String getJtiByToken(String token) {
+        try {
+            Claims claims = jwtParser.parseClaimsJws(token).getBody();
+            return claims.getId();
+        } catch (Exception e) {
+            log.error("解析 Token 获取 JWT ID 失败", e);
         }
         return null;
     }

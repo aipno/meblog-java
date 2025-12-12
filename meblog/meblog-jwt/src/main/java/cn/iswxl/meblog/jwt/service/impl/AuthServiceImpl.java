@@ -146,8 +146,13 @@ public class AuthServiceImpl implements AuthService {
         // 查询用户权限并缓存到Redis
         permissionService.cacheUserPermissions(username);
 
-        // 生成JWT Token并返回
+        // 生成JWT Token
         String token = jwtTokenHelper.generateToken(username);
+
+        // 将用户与Token的映射关系存储到Redis中，实现单点登录
+        // 过期时间比Token的过期时间多5分钟，确保Token完全过期
+        // 转换为秒：35分钟 = 35 * 60秒
+        redisUtils.set("user:token:" + username, token, 35 * 60);
 
         return new LoginRspVO(token);
     }
@@ -217,8 +222,27 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() != null) {
             String username = authentication.getPrincipal().toString();
+            String token = null;
+
+            // 获取当前Token
+            Object details = authentication.getDetails();
+            // 由于无法直接从Authentication中获取Token，我们从Redis中获取当前用户的Token
+            token = (String) redisUtils.get("user:token:" + username);
+
             // 清除用户权限缓存
             redisUtils.del("permissions:" + username);
+
+            // 从Redis中删除用户Token映射
+            redisUtils.del("user:token:" + username);
+
+            // 将Token加入黑名单
+            if (token != null) {
+                String jti = jwtTokenHelper.getJtiByToken(token);
+                if (jti != null) {
+                    // 将JWT ID加入黑名单，过期时间为35分钟（与user:token过期时间一致）
+                    redisUtils.set("blacklist:token:" + jti, "1", 35 * 60);
+                }
+            }
         }
         // 清除安全上下文
         SecurityContextHolder.clearContext();

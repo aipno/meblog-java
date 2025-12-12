@@ -81,8 +81,22 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     return;
                 }
 
-                // 从 Token 中解析出用户名
+                // 检查Token是否在黑名单中
+                String jti = jwtTokenHelper.getJtiByToken(token);
+                if (jti != null && redisUtils.get("blacklist:token:" + jti) != null) {
+                    authenticationEntryPoint.commence(request, response, new AuthenticationServiceException("Token 已失效"));
+                    return;
+                }
+
+                // 检查用户是否在其他设备登录（单点登录）
                 String username = jwtTokenHelper.getUsernameByToken(token);
+                String userTokenKey = "user:token:" + username;
+                String storedToken = (String) redisUtils.get(userTokenKey);
+                if (storedToken != null && !storedToken.equals(token)) {
+                    // 如果Redis中存储的Token与当前Token不一致，说明已在其他地方登录
+                    authenticationEntryPoint.commence(request, response, new AuthenticationServiceException("账号已在其他设备登录"));
+                    return;
+                }
 
                 if (StringUtils.isNotBlank(username)
                         && Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
@@ -101,7 +115,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     String userCacheKey = "user:info:" + username;
                     Object userObj = redisUtils.get(userCacheKey);
                     UserDO userDO = null;
-                    
+
                     // 处理从Redis中获取的对象，可能是JSONObject类型
                     if (userObj != null) {
                         if (userObj instanceof UserDO) {

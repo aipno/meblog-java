@@ -120,5 +120,11 @@
             <artifactId>springdoc-openapi-ui</artifactId>
         </dependency>
 
+        <!-- 添加Jsoup依赖用于HTML清洗 -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
