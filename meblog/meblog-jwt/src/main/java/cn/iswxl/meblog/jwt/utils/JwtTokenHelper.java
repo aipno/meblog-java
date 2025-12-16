@@ -1,13 +1,13 @@
 package cn.iswxl.meblog.jwt.utils;
 
+import cn.iswxl.meblog.common.enums.ResponseCodeEnum;
+import cn.iswxl.meblog.common.exception.BizException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -43,6 +43,23 @@ public class JwtTokenHelper implements InitializingBean {
     private Long tokenExpireTime;
 
     /**
+     * 生成一个 Base64 的安全秘钥
+     */
+    private static String generateBase64Key() {
+        // 生成安全秘钥
+        Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
+        // 将密钥进行 Base64 编码
+
+        return Base64.getEncoder().encodeToString(secretKey.getEncoded());
+    }
+
+    public static void main(String[] args) {
+        String key = generateBase64Key();
+        System.out.println("key: " + key);
+    }
+
+    /**
      * 解码配置文件中配置的 Base 64 编码 key 为秘钥
      */
     @Value("${jwt.secret}")
@@ -68,7 +85,7 @@ public class JwtTokenHelper implements InitializingBean {
         LocalDateTime now = LocalDateTime.now();
         // Token 30分钟后失效
         LocalDateTime expireTime = now.plusMinutes(tokenExpireTime);
-        
+
         // 生成JWT ID
         String jti = UUID.randomUUID().toString();
 
@@ -88,27 +105,10 @@ public class JwtTokenHelper implements InitializingBean {
         try {
             return jwtParser.parseClaimsJws(token);
         } catch (SignatureException | MalformedJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-            throw new BadCredentialsException("Token 不可用", e);
+            throw new BizException(ResponseCodeEnum.TOKEN_NOT_EXISTED);
         } catch (ExpiredJwtException e) {
-            throw new CredentialsExpiredException("Token 失效", e);
+            throw new BizException(ResponseCodeEnum.TOKEN_NOT_VALID);
         }
-    }
-
-    /**
-     * 生成一个 Base64 的安全秘钥
-     */
-    private static String generateBase64Key() {
-        // 生成安全秘钥
-        Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-
-        // 将密钥进行 Base64 编码
-
-        return Base64.getEncoder().encodeToString(secretKey.getEncoded());
-    }
-
-    public static void main(String[] args) {
-        String key = generateBase64Key();
-        System.out.println("key: " + key);
     }
 
     /**
@@ -130,7 +130,7 @@ public class JwtTokenHelper implements InitializingBean {
         }
         return null;
     }
-    
+
     /**
      * 解析 Token 获取 JWT ID
      */

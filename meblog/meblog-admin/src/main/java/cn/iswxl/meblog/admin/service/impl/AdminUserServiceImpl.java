@@ -4,6 +4,7 @@ import cn.iswxl.meblog.admin.model.vo.user.FindUserInfoListRspVO;
 import cn.iswxl.meblog.admin.model.vo.user.FindUserInfoRspVO;
 import cn.iswxl.meblog.admin.model.vo.user.UpdateAdminUserPasswordReqVO;
 import cn.iswxl.meblog.admin.service.AdminUserService;
+import cn.iswxl.meblog.common.context.UserContext;
 import cn.iswxl.meblog.common.domain.dos.UserDO;
 import cn.iswxl.meblog.common.domain.mapper.BlogSettingsMapper;
 import cn.iswxl.meblog.common.domain.mapper.RoleMapper;
@@ -14,9 +15,7 @@ import cn.iswxl.meblog.common.exception.BizException;
 import cn.iswxl.meblog.common.utils.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import cn.iswxl.meblog.jwt.config.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -48,8 +47,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public Response updatePassword(UpdateAdminUserPasswordReqVO updateAdminUserPasswordReqVO) {
         // 获取当前登录用户
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
+        String currentUsername = UserContext.getUsername();
         
         // 验证旧密码
         String oldPassword = updateAdminUserPasswordReqVO.getOldPassword();
@@ -64,12 +62,12 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
         
         // 验证旧密码是否正确
-        if (!passwordEncoder.matches(oldPassword, currentUser.getPassword())) {
+        if (!passwordEncoder.passwordEncode().matches(oldPassword, currentUser.getPassword())) {
             throw new BizException(ResponseCodeEnum.OLD_PASSWORD_ERROR);
         }
         
         // 加密新密码
-        String encodePassword = passwordEncoder.encode(updateAdminUserPasswordReqVO.getPassword());
+        String encodePassword = passwordEncoder.passwordEncode().encode(updateAdminUserPasswordReqVO.getPassword());
         
         // 更新当前用户的密码
         int count = userMapper.updatePasswordByUsername(currentUsername, encodePassword);
@@ -96,7 +94,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
         
         // 加密密码
-        String encodePassword = passwordEncoder.encode(password);
+        String encodePassword = passwordEncoder.passwordEncode().encode(password);
         
         // 更新到数据库
         int count = userMapper.updatePasswordByUsername(username, encodePassword);
@@ -112,9 +110,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public Response findUserInfo() {
         // 获取存储在 ThreadLocal 中的用户信息
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // 拿到用户名
-        String username = authentication.getName();
+        String username = UserContext.getUsername();
         // 拿到用户头像
         String avatar = blogSettingsMapper.selectById(1).getAvatar();
 

@@ -1,10 +1,10 @@
 package cn.iswxl.meblog.jwt.aspect;
 
-import cn.iswxl.meblog.common.domain.dos.UserDO;
+import cn.iswxl.meblog.common.context.UserContext;
 import cn.iswxl.meblog.common.domain.mapper.UserMapper;
 import cn.iswxl.meblog.common.enums.LogicalEnum;
-import cn.iswxl.meblog.common.exception.BizException;
 import cn.iswxl.meblog.common.enums.ResponseCodeEnum;
+import cn.iswxl.meblog.common.exception.BizException;
 import cn.iswxl.meblog.jwt.annotation.RequiresPermission;
 import cn.iswxl.meblog.jwt.annotation.RequiresRoles;
 import cn.iswxl.meblog.jwt.service.PermissionService;
@@ -15,9 +15,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -59,7 +56,8 @@ public class PermissionAspect {
         RequiresPermission requiresPermission = method.getAnnotation(RequiresPermission.class);
         if (requiresPermission != null) {
             // 获取当前用户
-            Long userId = getCurrentUserId();
+            Long userId = UserContext.getUserId();
+
             if (userId == null) {
                 throw new BizException(ResponseCodeEnum.UNAUTHORIZED);
             }
@@ -70,7 +68,7 @@ public class PermissionAspect {
 
             boolean hasPermission = checkPermissions(userId, permissions, logical);
             if (!hasPermission) {
-                throw new AccessDeniedException(requiresPermission.message());
+                throw new BizException(ResponseCodeEnum.FORBIDDEN);
             }
         }
 
@@ -87,7 +85,7 @@ public class PermissionAspect {
 
         RequiresRoles requiresRoles = method.getAnnotation(RequiresRoles.class);
         if (requiresRoles != null) {
-            Long userId = getCurrentUserId();
+            Long userId = UserContext.getUserId();
             if (userId == null) {
                 throw new BizException(ResponseCodeEnum.UNAUTHORIZED);
             }
@@ -97,7 +95,7 @@ public class PermissionAspect {
 
             boolean hasRole = checkRoles(userId, roles, logical);
             if (!hasRole) {
-                throw new AccessDeniedException(requiresRoles.message());
+                throw new BizException(ResponseCodeEnum.FORBIDDEN);
             }
         }
 
@@ -154,35 +152,5 @@ public class PermissionAspect {
             }
             return false;
         }
-    }
-
-    /**
-     * 获取当前用户ID
-     * 
-     * @return 用户ID，如果用户未登录或获取失败则返回null
-     */
-    private Long getCurrentUserId() {
-        try {
-            // 获取当前用户认证信息
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            // 验证用户是否已通过身份验证且不是匿名用户
-            if (authentication != null && authentication.isAuthenticated()
-                    && !"anonymousUser".equals(authentication.getPrincipal())) {
-
-                // 获取用户名
-                String username = authentication.getName();
-
-                // 根据用户名查询用户信息
-                UserDO user = userMapper.findByUsername(username);
-
-                // 返回用户ID
-                return user != null ? user.getId() : null;
-            }
-        } catch (Exception e) {
-            log.warn("获取当前用户ID失败: {}", e.getMessage());
-        }
-        
-        return null;
     }
 }

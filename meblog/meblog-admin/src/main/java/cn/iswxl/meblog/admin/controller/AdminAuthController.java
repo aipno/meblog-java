@@ -4,7 +4,6 @@ import cn.iswxl.meblog.common.annotation.ApiOperationLog;
 import cn.iswxl.meblog.common.utils.Response;
 import cn.iswxl.meblog.jwt.model.certification.LoginReqVO;
 import cn.iswxl.meblog.jwt.model.certification.LoginRspVO;
-import cn.iswxl.meblog.jwt.model.certification.RegisterReqVO;
 import cn.iswxl.meblog.jwt.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

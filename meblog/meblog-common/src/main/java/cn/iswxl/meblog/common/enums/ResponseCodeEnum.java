@@ -50,6 +50,12 @@ public enum ResponseCodeEnum implements BaseExceptionInterface {
     OLD_PASSWORD_ERROR("20017", "旧密码错误"),
     
     PASSWORD_UPDATE_FAILED("20018", "密码更新失败"),
+
+    TOKEN_NOT_VALID("20019", "Token 无效"),
+
+    TOKEN_NOT_EXISTED("20020", "Token 不存在"),
+
+    USERNAME_OR_PWD_REQUIRED("20021", "用户名或密码不能为空"),
     ;
 
     // 异常码

@@ -2,14 +2,12 @@ package cn.iswxl.meblog.web.controller;
 
 import cn.iswxl.meblog.common.annotation.ApiOperationLog;
 import cn.iswxl.meblog.common.utils.Response;
-import cn.iswxl.meblog.jwt.annotation.RequiresPermission;
 import cn.iswxl.meblog.web.model.vo.wiki.FindWikiArticlePreNextReqVO;
 import cn.iswxl.meblog.web.model.vo.wiki.FindWikiCatalogListReqVO;
 import cn.iswxl.meblog.web.service.WikiService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
