@@ -27,6 +27,10 @@ public class FindArticleDetailRspVO {
      * 文章封面
      */
     private String cover;
+    /**
+     * 封面 URL
+     */
+    private String coverUrl;
 
     /**
      * 文章内容

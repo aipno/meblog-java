@@ -3,6 +3,7 @@ package cn.iswxl.meblog.common.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -15,6 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 public class JsonUtil {
 
     private static final ObjectMapper INSTANCE = new ObjectMapper();
+
+    static {
+        INSTANCE.registerModule(new JavaTimeModule());
+    }
 
     public static String toJsonString(Object obj) {
         try {

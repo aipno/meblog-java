@@ -126,7 +126,7 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         }
 
         // 只查询提交的标签名称对应的数据
-        List<TagDO> existedTagDOs = tagMapper.selectList(Wrappers.<TagDO>lambdaQuery().in(TagDO::getName, publishTags));
+        List<TagDO> existedTagDOs = tagMapper.selectList(Wrappers.<TagDO>lambdaQuery().in(TagDO::getId, publishTags));
 
         // 已存在的标签名称集合（转为小写以便比较）
         Map<String, TagDO> existedTagNameMap = existedTagDOs.stream()
@@ -278,6 +278,8 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         // DO 转 VO
         FindArticleDetailRspVO vo = ArticleDetailConvert.INSTANCE.convertDO2VO(articleDO);
         vo.setContent(articleContentDO.getContent());
+        vo.setCover(String.valueOf(articleDO.getCoverId()));
+        vo.setCoverUrl(imageMapper.selectById(articleDO.getCoverId()).getImageUrl());
         vo.setCategoryId(articleCategoryRelDO.getCategoryId());
         vo.setTagIds(tagIds);
 

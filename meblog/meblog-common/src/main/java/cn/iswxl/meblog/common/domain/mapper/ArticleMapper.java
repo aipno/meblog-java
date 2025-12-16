@@ -34,8 +34,8 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
                 .like(StringUtils.isNotBlank(title), ArticleDO::getTitle, title) // like 模块查询
                 .ge(Objects.nonNull(startDate), ArticleDO::getCreateTime, startDate) // 大于等于 startDate
                 .le(Objects.nonNull(endDate), ArticleDO::getCreateTime, endDate)  // 小于等于 endDate
-                .eq(Objects.nonNull(type), ArticleDO::getType, type) // 文章类型
-                .eq(Objects.nonNull(IsPublish), ArticleDO::getIsPublish, IsPublish) // 文章是否发布
+                .eq(Objects.nonNull(type), ArticleDO::getType, 1) // 文章类型
+                .eq(Objects.nonNull(IsPublish), ArticleDO::getIsPublish, 1) // 文章是否发布
 //                .orderByDesc(ArticleDO::getWeight) // 按权重倒序
                 .orderByDesc(ArticleDO::getCreateTime); // 按创建时间倒叙
 
@@ -67,8 +67,8 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
         // 构建查询条件
         LambdaQueryWrapper<ArticleDO> wrapper = Wrappers.<ArticleDO>lambdaQuery()
                 .in(ArticleDO::getId, articleIds) // 批量查询
-                .eq(Objects.nonNull(type), ArticleDO::getType, type) // 文章类型
-                .eq(Objects.nonNull(isPublish), ArticleDO::getIsPublish, isPublish) // 文章是否发布
+                .eq(Objects.nonNull(type), ArticleDO::getType, 1) // 文章类型
+                .eq(Objects.nonNull(isPublish), ArticleDO::getIsPublish, 1) // 文章是否发布
                 .orderByDesc(ArticleDO::getCreateTime); // 按创建时间倒叙
 
         return selectPage(page, wrapper);
@@ -80,6 +80,8 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
      */
     default ArticleDO selectPreArticle(Long articleId) {
         return selectOne(Wrappers.<ArticleDO>lambdaQuery()
+                .eq(ArticleDO::getIsPublish, 1)
+                .eq(ArticleDO::getType,1)
                 .orderByAsc(ArticleDO::getId) // 按文章 ID 升序排列
                 .gt(ArticleDO::getId, articleId) // 查询比当前文章 ID 大的
                 .last("limit 1")); // 第一条记录即为上一篇文章
@@ -91,6 +93,8 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
      */
     default ArticleDO selectNextArticle(Long articleId) {
         return selectOne(Wrappers.<ArticleDO>lambdaQuery()
+                .eq(ArticleDO::getIsPublish, 1)
+                .eq(ArticleDO::getType,1)
                 .orderByDesc(ArticleDO::getId) // 按文章 ID 倒序排列
                 .lt(ArticleDO::getId, articleId) // 查询比当前文章 ID 小的
                 .last("limit 1")); // 第一条记录即为下一篇文章
@@ -106,11 +110,12 @@ public interface ArticleMapper extends BaseMapper<ArticleDO> {
                 .setSql("read_num = read_num + 1")
                 .eq(ArticleDO::getId, articleId));
     }
-    
+
     /**
      * 批量增加阅读量
+     *
      * @param articleId 文章ID
-     * @param count 增加的数量
+     * @param count     增加的数量
      */
     default void increaseReadNumByCount(Long articleId, Long count) {
         // 执行 SQL : UPDATE t_article SET read_num = read_num + ? WHERE (id = XX)

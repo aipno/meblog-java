@@ -67,47 +67,47 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private UserRoleMapper userRoleMapper;
 
-    @Override
-    public void sendMailCode(String email) {
-        // 检查邮箱是否为空
-        if (email == null || email.trim().isEmpty()) {
-            throw new RuntimeException("邮箱地址不能为空");
-        }
-
-        // 检查60秒冷却时间
-        String cooldownKey = "cooldown:" + email;
-        if (redisUtils.get(cooldownKey) != null) {
-            throw new RuntimeException("邮件发送过于频繁，请稍后再试");
-        }
-
-        // 查看注册邮箱是否存在
-        if (userMapper.existsByEmail(email)) {
-            throw new RuntimeException("注册邮箱已存在");
-        }
-
-        // 获取发送邮箱验证码的HTML模板
-        TemplateEngine engine = TemplateUtil.createEngine(new TemplateConfig("/templates/", TemplateConfig.ResourceMode.CLASSPATH));
-        Template template = engine.getTemplate("email-code.ftl");
-
-        // 从redis缓存中尝试获取验证码
-        Object code = redisUtils.get(email);
-        if (code == null) {
-            // 如果在缓存中未获取到验证码，则产生6位随机数，放入缓存中
-            code = RandomUtil.randomNumbers(6);
-            if (!redisUtils.set(email, code, expiration)) {
-                throw new RuntimeException("后台缓存服务异常");
-            }
-        }
-
-        // 设置60秒冷却时间
-        redisUtils.set(cooldownKey, "1", 60);
-
-        // 发送验证码
-        String content = template.render(Dict.create().set("code", code));
-        emailService.send(new SendEmailRspVO(Collections.singletonList(email),
-                "邮箱验证码", content));
-
-    }
+//    @Override
+//    public void sendMailCode(String email) {
+//        // 检查邮箱是否为空
+//        if (email == null || email.trim().isEmpty()) {
+//            throw new RuntimeException("邮箱地址不能为空");
+//        }
+//
+//        // 检查60秒冷却时间
+//        String cooldownKey = "cooldown:" + email;
+//        if (redisUtils.get(cooldownKey) != null) {
+//            throw new RuntimeException("邮件发送过于频繁，请稍后再试");
+//        }
+//
+//        // 查看注册邮箱是否存在
+//        if (userMapper.existsByEmail(email)) {
+//            throw new RuntimeException("注册邮箱已存在");
+//        }
+//
+//        // 获取发送邮箱验证码的HTML模板
+//        TemplateEngine engine = TemplateUtil.createEngine(new TemplateConfig("/templates/", TemplateConfig.ResourceMode.CLASSPATH));
+//        Template template = engine.getTemplate("email-code.ftl");
+//
+//        // 从redis缓存中尝试获取验证码
+//        Object code = redisUtils.get(email);
+//        if (code == null) {
+//            // 如果在缓存中未获取到验证码，则产生6位随机数，放入缓存中
+//            code = RandomUtil.randomNumbers(6);
+//            if (!redisUtils.set(email, code, expiration)) {
+//                throw new RuntimeException("后台缓存服务异常");
+//            }
+//        }
+//
+//        // 设置60秒冷却时间
+//        redisUtils.set(cooldownKey, "1", 60);
+//
+//        // 发送验证码
+//        String content = template.render(Dict.create().set("code", code));
+//        emailService.send(new SendEmailRspVO(Collections.singletonList(email),
+//                "邮箱验证码", content));
+//
+//    }
 
     @Override
     public LoginRspVO login(LoginReqVO loginReqVO) {
@@ -157,64 +157,64 @@ public class AuthServiceImpl implements AuthService {
         return new LoginRspVO(token);
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public boolean register(RegisterReqVO registerReqVO) {
-        String username = registerReqVO.getUsername();
-        String password = registerReqVO.getPassword();
-        String confirmPassword = registerReqVO.getConfirmPassword();
-        String email = registerReqVO.getEmail();
-        String code = registerReqVO.getCode();
-
-        // 验证参数
-        if (username == null || username.trim().isEmpty() ||
-                password == null || password.trim().isEmpty() ||
-                confirmPassword == null || confirmPassword.trim().isEmpty() ||
-                !confirmPassword.equals(password) ||
-                email == null || email.trim().isEmpty() ||
-                code == null || code.trim().isEmpty()) {
-            throw new RuntimeException("所有字段都必须填写");
-        }
-
-        // 验证邮箱验证码
-        Object cachedCode = redisUtils.get(email);
-        if (cachedCode == null || !cachedCode.toString().equals(code)) {
-            throw new RuntimeException("验证码错误或已过期");
-        }
-
-        // 检查用户名是否已存在
-        UserDO existingUser = userMapper.findByUsername(username);
-        if (existingUser != null) {
-            throw new RuntimeException("用户名已存在");
-        }
-
-        // 检查邮箱是否已存在
-        if (userMapper.existsByEmail(email)) {
-            throw new RuntimeException("邮箱已被注册");
-        }
-
-        // 创建新用户
-        UserDO userDO = UserDO.builder()
-                .username(username)
-                .password(passwordEncoder.encode(password))
-                .email(email)
-                .status(true)
-                .createTime(LocalDateTime.now())
-                .updateTime(LocalDateTime.now())
-                .isDeleted(false)
-                .build();
-
-        // 保存用户信息
-        int result = userMapper.insert(userDO);
-
-        // 设置角色权限
-        userRoleMapper.insertUserRole(userDO.getId(), 3L);
-
-        // 删除已使用的验证码
-        redisUtils.del(email);
-
-        return result > 0;
-    }
+//    @Override
+//    @Transactional(rollbackFor = Exception.class)
+//    public boolean register(RegisterReqVO registerReqVO) {
+//        String username = registerReqVO.getUsername();
+//        String password = registerReqVO.getPassword();
+//        String confirmPassword = registerReqVO.getConfirmPassword();
+//        String email = registerReqVO.getEmail();
+//        String code = registerReqVO.getCode();
+//
+//        // 验证参数
+//        if (username == null || username.trim().isEmpty() ||
+//                password == null || password.trim().isEmpty() ||
+//                confirmPassword == null || confirmPassword.trim().isEmpty() ||
+//                !confirmPassword.equals(password) ||
+//                email == null || email.trim().isEmpty() ||
+//                code == null || code.trim().isEmpty()) {
+//            throw new RuntimeException("所有字段都必须填写");
+//        }
+//
+//        // 验证邮箱验证码
+//        Object cachedCode = redisUtils.get(email);
+//        if (cachedCode == null || !cachedCode.toString().equals(code)) {
+//            throw new RuntimeException("验证码错误或已过期");
+//        }
+//
+//        // 检查用户名是否已存在
+//        UserDO existingUser = userMapper.findByUsername(username);
+//        if (existingUser != null) {
+//            throw new RuntimeException("用户名已存在");
+//        }
+//
+//        // 检查邮箱是否已存在
+//        if (userMapper.existsByEmail(email)) {
+//            throw new RuntimeException("邮箱已被注册");
+//        }
+//
+//        // 创建新用户
+//        UserDO userDO = UserDO.builder()
+//                .username(username)
+//                .password(passwordEncoder.encode(password))
+//                .email(email)
+//                .status(true)
+//                .createTime(LocalDateTime.now())
+//                .updateTime(LocalDateTime.now())
+//                .isDeleted(false)
+//                .build();
+//
+//        // 保存用户信息
+//        int result = userMapper.insert(userDO);
+//
+//        // 设置角色权限
+//        userRoleMapper.insertUserRole(userDO.getId(), 3L);
+//
+//        // 删除已使用的验证码
+//        redisUtils.del(email);
+//
+//        return result > 0;
+//    }
 
     @Override
     public void logout() {

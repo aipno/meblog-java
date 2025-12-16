@@ -28,12 +28,12 @@ public class EmailController {
 //        return Response.success("发送成功");
 //    }
 
-    @PostMapping("/code")
-    @Operation(description = "发送注册验证码")
-    @ApiOperationLog(description = "发送注册验证码")
-    public Response sendEmailTest(@RequestBody @Validated SendEmailReqVO sendEmailReqVO) {
-        authService.sendMailCode(sendEmailReqVO.getEmail());
-        System.out.println(sendEmailReqVO.getEmail());
-        return Response.success("发送成功");
-    }
+//    @PostMapping("/code")
+//    @Operation(description = "发送注册验证码")
+//    @ApiOperationLog(description = "发送注册验证码")
+//    public Response sendEmailTest(@RequestBody @Validated SendEmailReqVO sendEmailReqVO) {
+//        authService.sendMailCode(sendEmailReqVO.getEmail());
+//        System.out.println(sendEmailReqVO.getEmail());
+//        return Response.success("发送成功");
+//    }
 }

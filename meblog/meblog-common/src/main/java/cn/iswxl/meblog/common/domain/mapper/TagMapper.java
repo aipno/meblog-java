@@ -61,5 +61,23 @@ public interface TagMapper extends BaseMapper<TagDO> {
                 .in(TagDO::getId, tagIds));
     }
 
+    /**
+     * 根据文章 ID 查询
+     */
+    default List<TagDO> selectByArticleId(Long articleId) {
+        return selectList(Wrappers.<TagDO>lambdaQuery()
+                .eq(TagDO::getId, articleId));
+    }
+
+    /**
+     * 根据标签 ID 更新标签名称
+     */
+    default void updateTagNameById(Long tagId, String tagName) {
+        update(null, Wrappers.<TagDO>lambdaUpdate()
+                .eq(TagDO::getId, tagId)
+                .set(TagDO::getName, tagName)
+        );
+    }
+
 }
 

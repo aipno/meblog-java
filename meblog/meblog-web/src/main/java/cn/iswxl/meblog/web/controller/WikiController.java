@@ -27,7 +27,6 @@ public class WikiController {
     @PostMapping("/list")
     @Operation(description = "获取知识库数据")
     @ApiOperationLog(description = "获取知识库数据")
-    @RequiresPermission(value = "web:wiki:list")
     public Response findWikiList() {
         return wikiService.findWikiList();
     }
@@ -35,7 +34,6 @@ public class WikiController {
     @PostMapping("/catalog/list")
     @Operation(description = "获取知识库目录数据")
     @ApiOperationLog(description = "获取知识库目录数据")
-    @RequiresPermission(value = "web:wiki:catalog:list")
     public Response findWikiCatalogList(@RequestBody @Validated FindWikiCatalogListReqVO findWikiCatalogListReqVO) {
         return wikiService.findWikiCatalogList(findWikiCatalogListReqVO);
     }

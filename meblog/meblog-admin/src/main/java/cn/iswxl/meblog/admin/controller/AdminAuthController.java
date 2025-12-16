@@ -31,17 +31,6 @@ public class AdminAuthController {
         return Response.success(token);
     }
 
-    @PostMapping("/register")
-    @Operation(description = "注册")
-    @ApiOperationLog(description = "注册")
-    public Response register(@RequestBody @Validated RegisterReqVO registerReqVO) {
-        if (authService.register(registerReqVO)) {
-            return Response.success();
-        } else {
-            return Response.fail("注册失败，请稍后重新尝试");
-        }
-    }
-
     @PostMapping("/logout")
     @Operation(description = "登出")
     @ApiOperationLog(description = "登出")

@@ -33,9 +33,8 @@
 
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <p6spy.version>3.9.1</p6spy.version>
-        <hutool.version>5.8.19</hutool.version>
+        <hutool.version>5.8.40</hutool.version>
         <guava.version>33.3.1-jre</guava.version>
-        <fastjson.version>1.2.83</fastjson.version>
         <jjwt.version>0.11.2</jjwt.version>
         <lucene.version>8.11.1</lucene.version>
         <commons-io.version>2.11.0</commons-io.version>
@@ -46,6 +45,9 @@
         <poi.version>3.17</poi.version>
         <commonmark.version>0.20.0</commonmark.version>
         <jsoup.version>1.15.3</jsoup.version>
+        <jackson.version>2.15.2</jackson.version>
+        <jackson-databind.version>2.13.4.2</jackson-databind.version>
+        <commons-lang3.version>3.18.0</commons-lang3.version>
     </properties>
 
     <dependencyManagement>
@@ -92,11 +94,6 @@
                 <version>${guava.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
@@ -121,6 +118,18 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt-jackson</artifactId>
                 <version>${jjwt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson-databind.version}</version>
             </dependency>
 
             <dependency>
@@ -196,6 +205,11 @@
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
                 <version>${jsoup.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
             </dependency>
 
         </dependencies>

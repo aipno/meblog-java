@@ -1,9 +1,6 @@
 package cn.iswxl.meblog.admin.controller;
 
-import cn.iswxl.meblog.admin.model.vo.tag.AddTagReqVO;
-import cn.iswxl.meblog.admin.model.vo.tag.DeleteTagReqVO;
-import cn.iswxl.meblog.admin.model.vo.tag.FindTagPageListReqVO;
-import cn.iswxl.meblog.admin.model.vo.tag.SearchTagReqVO;
+import cn.iswxl.meblog.admin.model.vo.tag.*;
 import cn.iswxl.meblog.admin.service.AdminTagService;
 import cn.iswxl.meblog.common.annotation.ApiOperationLog;
 import cn.iswxl.meblog.common.utils.PageResponse;
@@ -40,6 +37,14 @@ public class AdminTagController {
     @ApiOperationLog(description = "标签分页数据获取")
     public PageResponse findTagPageList(@RequestBody @Validated FindTagPageListReqVO findTagPageListReqVO) {
         return tagService.findTagPageList(findTagPageListReqVO);
+    }
+
+    @PostMapping("/update")
+    @Operation(description = "更新标签")
+    @ApiOperationLog(description = "更新标签")
+//    @RequiresPermission(value = {"admin:tag:update"})
+    public Response updateTag(@RequestBody @Validated UpdateTagReqVO updateTagReqVO) {
+        return tagService.updateTag(updateTagReqVO);
     }
 
     @PostMapping("/delete")
