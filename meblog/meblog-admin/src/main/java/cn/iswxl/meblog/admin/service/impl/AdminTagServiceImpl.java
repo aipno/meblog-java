@@ -185,11 +185,6 @@ public class AdminTagServiceImpl extends ServiceImpl<TagMapper, TagDO> implement
     }
 
     @Override
-    public Response findAllTag() {
-        return Response.success(tagMapper.selectAllTag());
-    }
-
-    @Override
     public Response updateTag(UpdateTagReqVO updateTagReqVO) {
         Long tagId = updateTagReqVO.getId();
         String tagName = updateTagReqVO.getName();

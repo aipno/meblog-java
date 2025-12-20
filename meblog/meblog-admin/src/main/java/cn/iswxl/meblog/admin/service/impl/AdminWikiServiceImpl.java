@@ -49,7 +49,7 @@ public class AdminWikiServiceImpl implements AdminWikiService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Response addWiKi(AddWikiReqVO addWiKiReqVO) {
+    public Response<Object> addWiKi(AddWikiReqVO addWiKiReqVO) {
         // VO 转 DO
         WikiDO wikiDO = WikiDO.builder()
                 .cover(addWiKiReqVO.getCover())

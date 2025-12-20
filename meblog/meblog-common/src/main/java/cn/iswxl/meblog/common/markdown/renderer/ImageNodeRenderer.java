@@ -59,9 +59,8 @@ public class ImageNodeRenderer implements NodeRenderer {
 
         // 图片宽高
         Node lastChild = node.getLastChild();
-        if (Objects.nonNull(lastChild) && lastChild instanceof ImageAttributes) {
-            ImageAttributes imageAttributes = (ImageAttributes) lastChild;
-            if (Objects.nonNull(imageAttributes) && !CollectionUtils.isEmpty(imageAttributes.getAttributes())) {
+        if (Objects.nonNull(lastChild) && lastChild instanceof ImageAttributes imageAttributes) {
+            if (!CollectionUtils.isEmpty(imageAttributes.getAttributes())) {
                 String width = imageAttributes.getAttributes().get(KEY_WIDTH);
                 String height = imageAttributes.getAttributes().get(KEY_HEIGHT);
                 sb.append(StringUtils.isBlank(width) ? "" : (" " + KEY_WIDTH + "=\"" + width + "\""));

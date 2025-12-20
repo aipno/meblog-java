@@ -1,7 +1,6 @@
 package cn.iswxl.meblog.common.domain.mapper;
 
 import cn.iswxl.meblog.common.domain.dos.TagDO;
-import cn.iswxl.meblog.common.utils.Response;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -15,12 +14,7 @@ public interface TagMapper extends BaseMapper<TagDO> {
 
     /**
      * 分页查询
-     * @param current
-     * @param size
-     * @param name
-     * @param startDate
-     * @param endDate
-     * @return
+     *
      */
     default Page<TagDO> selectPageList(long current, long size, String name, LocalDate startDate, LocalDate endDate) {
         // 分页对象
@@ -39,8 +33,7 @@ public interface TagMapper extends BaseMapper<TagDO> {
 
     /**
      * 根据关键字模糊查询
-     * @param key
-     * @return
+     *
      */
     default List<TagDO> selectByKey(String key) {
         LambdaQueryWrapper<TagDO> wrapper = new LambdaQueryWrapper<>();
@@ -52,10 +45,10 @@ public interface TagMapper extends BaseMapper<TagDO> {
 
         return selectList(wrapper);
     }
+
     /**
      * 根据标签 ID 批量查询
-     * @param tagIds
-     * @return
+     *
      */
     default List<TagDO> selectByIds(List<Long> tagIds) {
         return selectList(Wrappers.<TagDO>lambdaQuery()
@@ -80,11 +73,5 @@ public interface TagMapper extends BaseMapper<TagDO> {
         );
     }
 
-    /**
-     * 查询所有标签
-     */
-    default List<TagDO> selectAllTag() {
-        return selectList(null);
-    };
 }
 

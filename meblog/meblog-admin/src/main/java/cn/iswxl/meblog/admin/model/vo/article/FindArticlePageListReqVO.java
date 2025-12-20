@@ -2,13 +2,11 @@ package cn.iswxl.meblog.admin.model.vo.article;
 
 import cn.iswxl.meblog.common.model.BasePageQuery;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

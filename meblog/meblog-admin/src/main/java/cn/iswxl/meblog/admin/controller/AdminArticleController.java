@@ -21,8 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiresPermission(PermissionConstants.Article.BASE)
 public class AdminArticleController {
 
-    @Autowired
-    private AdminArticleService articleService;
+    private final AdminArticleService articleService;
+
+    public AdminArticleController(AdminArticleService articleService) {
+        this.articleService = articleService;
+    }
 
     @PostMapping("/publish")
     @Operation(description = "文章发布")
@@ -35,7 +38,7 @@ public class AdminArticleController {
     @PostMapping("/delete")
     @Operation(description = "文章删除")
     @ApiOperationLog(description = "文章删除")
-    @RequiresPermission(value = {"admin:article:delete"})
+    @RequiresPermission(PermissionConstants.Article.DELETE)
     public Response deleteArticle(@RequestBody @Validated DeleteArticleReqVO deleteArticleReqVO) {
         return articleService.deleteArticle(deleteArticleReqVO);
     }
@@ -43,7 +46,7 @@ public class AdminArticleController {
     @PostMapping("/list")
     @Operation(description = "查询文章分页数据")
     @ApiOperationLog(description = "查询文章分页数据")
-    @RequiresPermission(value = {"admin:article:list"})
+    @RequiresPermission(PermissionConstants.Article.LIST)
     public Response findArticlePageList(@RequestBody @Validated FindArticlePageListReqVO findArticlePageListReqVO) {
         return articleService.findArticlePageList(findArticlePageListReqVO);
     }
@@ -51,7 +54,7 @@ public class AdminArticleController {
     @PostMapping("/detail")
     @Operation(description = "查询文章详情")
     @ApiOperationLog(description = "查询文章详情")
-    @RequiresPermission(value = {"admin:article:detail"})
+    @RequiresPermission(PermissionConstants.Article.DETAIL)
     public Response findArticleDetail(@RequestBody @Validated FindArticleDetailReqVO findArticlePageListReqVO) {
         return articleService.findArticleDetail(findArticlePageListReqVO);
     }
@@ -59,7 +62,7 @@ public class AdminArticleController {
     @PostMapping("/update")
     @Operation(description = "更新文章")
     @ApiOperationLog(description = "更新文章")
-    @RequiresPermission(value = {"admin:article:update"})
+    @RequiresPermission(PermissionConstants.Article.UPDATE)
     public Response updateArticle(@RequestBody @Validated UpdateArticleReqVO updateArticleReqVO) {
         return articleService.updateArticle(updateArticleReqVO);
     }
@@ -67,7 +70,7 @@ public class AdminArticleController {
     @PostMapping("/isPublish/update")
     @Operation(description = "更新文章发布状态")
     @ApiOperationLog(description = "更新文章发布状态")
-    @RequiresPermission(value = {"admin:article:status:update"})
+    @RequiresPermission(PermissionConstants.Article.IS_PUBLISH_UPDATE)
     public Response updateWikiIsPublish(@RequestBody @Validated UpdateArticleIsPublishReqVO updateArticleIsPublishReqVO) {
         return articleService.updateArticleIsPublish(updateArticleIsPublishReqVO);
     }
@@ -75,7 +78,7 @@ public class AdminArticleController {
     @PostMapping("/isPermission/update")
     @Operation(description = "更新文章权限状态")
     @ApiOperationLog(description = "更新文章权限状态")
-    @RequiresPermission(value = {"admin:article:permission:update"})
+    @RequiresPermission(PermissionConstants.Article.IS_PERMISSION_UPDATE)
     public Response updateArticleIsPermission(@RequestBody @Validated UpdateArticlePermissionReqVO updateArticlePermissionReqVO) {
         return articleService.updateArticleIsPermission(updateArticlePermissionReqVO);
     }

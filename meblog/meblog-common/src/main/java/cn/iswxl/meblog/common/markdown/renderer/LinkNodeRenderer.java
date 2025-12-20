@@ -36,8 +36,7 @@ public class LinkNodeRenderer implements NodeRenderer {
 
     @Override
     public void render(Node node) {
-        if (node instanceof Link) {
-            Link link = (Link) node;
+        if (node instanceof Link link) {
 
             // 链接的内容
             String linkDescription = null;

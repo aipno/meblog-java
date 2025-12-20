@@ -9,6 +9,7 @@ import cn.iswxl.meblog.common.enums.ResponseCodeEnum;
 import cn.iswxl.meblog.common.exception.BizException;
 import cn.iswxl.meblog.common.service.EmailService;
 import cn.iswxl.meblog.common.utils.RedisUtils;
+import cn.iswxl.meblog.common.utils.Response;
 import cn.iswxl.meblog.jwt.model.certification.LoginReqVO;
 import cn.iswxl.meblog.jwt.model.certification.LoginRspVO;
 import cn.iswxl.meblog.jwt.service.AuthService;
@@ -25,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 授权登录接口实现类
- * (已移除 Spring Security 依赖)
  */
 @Slf4j
 @Service
@@ -125,19 +125,19 @@ public class AuthServiceImpl implements AuthService {
     */
 
     @Override
-    public void logout() {
+    public Response<Object> logout() {
         // 1. 从 UserContext 获取当前用户 ID (替代 SecurityContextHolder)
         Long userId = UserContext.getUserId();
         if (userId == null) {
             // 用户未登录，直接返回
-            return;
+            return Response.fail();
         }
 
         // 2. 获取用户名 (因为 Redis Key 依赖用户名)
         // 建议：如果 UserContext 中能存 username 最好，否则这里需要查一次库
         UserDO user = userMapper.selectById(userId);
         if (user == null) {
-            return;
+            return Response.fail();
         }
         String username = user.getUsername();
 
@@ -164,5 +164,6 @@ public class AuthServiceImpl implements AuthService {
         UserContext.remove();
 
         log.info("用户退出登录成功：{}", username);
+        return Response.success();
     }
 }

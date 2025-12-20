@@ -4,6 +4,8 @@ import cn.iswxl.meblog.admin.model.vo.permission.FindPermissionListReqVO;
 import cn.iswxl.meblog.admin.service.AdminPermissionService;
 import cn.iswxl.meblog.common.annotation.ApiOperationLog;
 import cn.iswxl.meblog.common.utils.Response;
+import cn.iswxl.meblog.jwt.annotation.RequiresPermission;
+import cn.iswxl.meblog.jwt.constant.PermissionConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin")
 @Tag(name = "Admin 权限模块")
+@RequiresPermission(PermissionConstants.Permission.BASE)
 public class AdminPermissionController {
 
-    @Autowired
-    private AdminPermissionService adminPermissionService;
+    private final AdminPermissionService adminPermissionService;
+
+    public AdminPermissionController(AdminPermissionService adminPermissionService) {
+        this.adminPermissionService = adminPermissionService;
+    }
 
     @PostMapping("/permission/list")
     @Operation(description = "获取角色所有权限列表")
     @ApiOperationLog(description = "获取角色所有权限列表")
+    @RequiresPermission(PermissionConstants.Permission.LIST)
     public Response getPermissionList(@RequestBody @Validated FindPermissionListReqVO findPermissionListReqVO) {
         return adminPermissionService.findPermissionWithParentList(findPermissionListReqVO.getRoleId());
     }

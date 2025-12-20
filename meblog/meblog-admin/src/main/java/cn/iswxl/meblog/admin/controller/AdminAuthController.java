@@ -19,8 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "认证")
 public class AdminAuthController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
+
+    public AdminAuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/login")
     @Operation(description = "登陆")

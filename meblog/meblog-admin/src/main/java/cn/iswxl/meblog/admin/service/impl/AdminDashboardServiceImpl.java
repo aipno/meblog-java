@@ -45,7 +45,7 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
      * @return
      */
     @Override
-    public Response findDashboardStatistics() {
+    public Response<FindDashboardStatisticsInfoRspVO> findDashboardStatistics() {
         // 查询文章总数
         Long articleTotalCount = articleMapper.selectCount(Wrappers.emptyWrapper());
 

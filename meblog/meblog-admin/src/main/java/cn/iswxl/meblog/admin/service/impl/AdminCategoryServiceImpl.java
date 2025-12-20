@@ -1,9 +1,6 @@
 package cn.iswxl.meblog.admin.service.impl;
 
-import cn.iswxl.meblog.admin.model.vo.category.FindCategoryPageListReqVO;
-import cn.iswxl.meblog.admin.model.vo.category.FindCategoryPageListRspVO;
-import cn.iswxl.meblog.admin.model.vo.category.AddCategoryReqVO;
-import cn.iswxl.meblog.admin.model.vo.category.DeleteCategoryReqVO;
+import cn.iswxl.meblog.admin.model.vo.category.*;
 import cn.iswxl.meblog.admin.service.AdminCategoryService;
 import cn.iswxl.meblog.common.domain.dos.ArticleCategoryRelDO;
 import cn.iswxl.meblog.common.domain.dos.CategoryDO;
@@ -62,7 +59,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     }
 
     @Override
-    public PageResponse findCategoryPageList(FindCategoryPageListReqVO findCategoryPageListReqVO) {
+    public PageResponse<FindCategoryPageListRspVO> findCategoryPageList(FindCategoryPageListReqVO findCategoryPageListReqVO) {
         // 获取当前页、以及每页需要展示的数据数量
         Long current = findCategoryPageListReqVO.getCurrent();
         Long size = findCategoryPageListReqVO.getSize();
@@ -129,6 +126,12 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
         }
 
         return Response.success(selectRspVOS);
+    }
+
+    @Override
+    public Response updateCategory(UpdateCategoryReqVO updateCategoryReqVO) {
+        //TODO 待实现
+        return null;
     }
 
 }

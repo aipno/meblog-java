@@ -1,14 +1,17 @@
 package cn.iswxl.meblog.admin.config;
 
 import io.minio.MinioClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MinioConfig {
-    @Autowired
-    private MinioProperties minioProperties;
+
+    private final MinioProperties minioProperties;
+
+    public MinioConfig(MinioProperties minioProperties) {
+        this.minioProperties = minioProperties;
+    }
 
     @Bean
     public MinioClient minioClient() {

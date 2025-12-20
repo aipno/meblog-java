@@ -6,6 +6,7 @@ import cn.iswxl.meblog.common.annotation.ApiOperationLog;
 import cn.iswxl.meblog.common.utils.PageResponse;
 import cn.iswxl.meblog.common.utils.Response;
 import cn.iswxl.meblog.jwt.annotation.RequiresPermission;
+import cn.iswxl.meblog.jwt.constant.PermissionConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin/tag")
 @Tag(name = "Admin 标签模块")
+@RequiresPermission(PermissionConstants.Tag.BASE)
 public class AdminTagController {
 
-    @Autowired
-    private AdminTagService tagService;
+    private final AdminTagService tagService;
+
+    public AdminTagController(AdminTagService tagService) {
+        this.tagService = tagService;
+    }
 
     @PostMapping("/add")
     @Operation(description = "添加标签")
     @ApiOperationLog(description = "添加标签")
-    @RequiresPermission(value = {"admin:tag:add"})
+    @RequiresPermission(PermissionConstants.Tag.CREATE)
     public Response addTag(@RequestBody @Validated AddTagReqVO addTagReqVO) {
         return tagService.addTags(addTagReqVO);
     }
@@ -38,17 +43,10 @@ public class AdminTagController {
         return tagService.findTagPageList(findTagPageListReqVO);
     }
 
-    @PostMapping("/all")
-    @Operation(description = "查询所有标签")
-    @ApiOperationLog(description = "查询所有标签")
-    public Response findTagAll() {
-        return tagService.findAllTag();
-    }
-
     @PostMapping("/update")
     @Operation(description = "更新标签")
     @ApiOperationLog(description = "更新标签")
-//    @RequiresPermission(value = {"admin:tag:update"})
+    @RequiresPermission(PermissionConstants.Tag.UPDATE)
     public Response updateTag(@RequestBody @Validated UpdateTagReqVO updateTagReqVO) {
         return tagService.updateTag(updateTagReqVO);
     }
@@ -56,7 +54,7 @@ public class AdminTagController {
     @PostMapping("/delete")
     @Operation(description = "删除标签")
     @ApiOperationLog(description = "删除标签")
-    @RequiresPermission(value = {"admin:tag:delete"})
+    @RequiresPermission(PermissionConstants.Tag.DELETE)
     public Response deleteTag(@RequestBody @Validated DeleteTagReqVO deleteTagReqVO) {
         return tagService.deleteTag(deleteTagReqVO);
     }

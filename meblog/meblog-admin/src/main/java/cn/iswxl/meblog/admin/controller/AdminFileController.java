@@ -9,11 +9,7 @@ import cn.iswxl.meblog.jwt.annotation.RequiresPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -22,8 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Admin 文件模块")
 public class AdminFileController {
 
-    @Autowired
-    private AdminFileService fileService;
+    private final AdminFileService fileService;
+
+    public AdminFileController(AdminFileService fileService) {
+        this.fileService = fileService;
+    }
 
     @PostMapping("/file/upload")
     @Operation(description = "文件上传")
@@ -44,11 +43,11 @@ public class AdminFileController {
     @PostMapping("/file/object/list")
     @Operation(description = "获取对象文件列表")
     @ApiOperationLog(description = "获取对象文件列表")
-//    @RequiresPermission(value = {"admin:file:object:list"})
+    @RequiresPermission(value = {"admin:file:object:list"})
     public Response findObjectFileList() {
         return Response.success(fileService.findObjectList());
     }
-    
+
     @PostMapping("/file/page")
     @Operation(description = "分页获取文件列表")
     @ApiOperationLog(description = "分页获取文件列表")

@@ -18,6 +18,7 @@ public interface PermissionConstants {
     // 模块：分类
     interface Category {
         String BASE = "admin:category";
+        String LIST = "list";
         String CREATE = "create";
         String UPDATE = "update";
         String DELETE = "delete";
@@ -53,26 +54,38 @@ public interface PermissionConstants {
 
     // 模块：图片
     interface Image {
-        String UPLOAD = "admin:image:upload";
-        String LIST = "admin:image:list";
+        String BASE = "admin:image";
+        String UPLOAD = "upload";
+        String LIST = "list";
     }
 
     // 模块：用户
     interface User {
-        String LIST = "admin:user:list";
-        String OTHER = "admin:user:other";
+        String BASE = "admin:user";
+        String LIST = "list";
+        String OTHER = "other";
     }
 
     // 模块：权限
     interface Permission {
-        String LIST = "admin:permission:list";
-        String OTHER = "admin:permission:other";
+        String BASE = "admin:permission";
+        String LIST = "list";
+        String OTHER = "other";
     }
 
     // 模块：角色
     interface Role {
-        String LIST = "admin:role:list";
-        String OTHER = "admin:role:other";
+        String BASE = "admin:role";
+        String LIST = "list";
+        String OTHER = "other";
+    }
+
+    // 模块：仪表盘
+    interface Dashboard {
+        String BASE = "admin:dashboard";
+        String STATISTICS = "statistics";
+        String PUBLISH_ARTICLE_STATISTICS = "publishArticle:statistics";
+        String PV_STATISTICS = "pv:statistics";
     }
 
 }

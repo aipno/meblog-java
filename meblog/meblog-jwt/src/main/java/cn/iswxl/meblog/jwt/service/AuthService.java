@@ -1,5 +1,6 @@
 package cn.iswxl.meblog.jwt.service;
 
+import cn.iswxl.meblog.common.utils.Response;
 import cn.iswxl.meblog.jwt.model.certification.LoginReqVO;
 import cn.iswxl.meblog.jwt.model.certification.LoginRspVO;
 import cn.iswxl.meblog.jwt.model.certification.RegisterReqVO;
@@ -20,6 +21,6 @@ public interface AuthService {
     /**
      * 退出登录
      */
-    void logout();
+    Response<Object> logout();
 }
 

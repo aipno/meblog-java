@@ -10,7 +10,7 @@ public interface AdminWikiService {
      * @param addWiKiReqVO
      * @return
      */
-    Response addWiKi(AddWikiReqVO addWiKiReqVO);
+    Response<Object> addWiKi(AddWikiReqVO addWiKiReqVO);
 
     /**
      * 删除知识库
