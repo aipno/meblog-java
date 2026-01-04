@@ -42,7 +42,7 @@ public class AdminRoleController {
     @PostMapping("/role/user")
     @Operation(description = "获取角色所有用户列表")
     @ApiOperationLog(description = "获取角色所有用户列表")
-    @RequiresPermission(PermissionConstants.Role.OTHER)
+    @RequiresPermission(PermissionConstants.Role.LIST_ALL)
     public Response getRoleUserList(@RequestBody @Validated FindRoleUserInfoListReqVO reqVO) {
         return Response.success(adminRoleService.findRoleUserInfoList(reqVO));
     }
@@ -50,7 +50,7 @@ public class AdminRoleController {
     @PostMapping("/role/permission/change")
     @Operation(description = "修改角色权限")
     @ApiOperationLog(description = "修改角色权限")
-    @RequiresPermission(PermissionConstants.Role.OTHER)
+    @RequiresPermission(PermissionConstants.Role.UPDETE_PERMISSION)
     public Response changeRolePermission(@RequestBody @Validated ChangeRolePermissionReqVO reqVO) {
         return adminRoleService.changeRolePermission(reqVO);
     }

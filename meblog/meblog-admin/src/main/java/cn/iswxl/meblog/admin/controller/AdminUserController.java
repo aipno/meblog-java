@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin")
 @Tag(name = "Admin 用户模块")
+@RequiresPermission(PermissionConstants.User.BASE)
 public class AdminUserController {
 
     private final AdminUserService userService;
@@ -37,6 +38,7 @@ public class AdminUserController {
     @PostMapping("/password/update")
     @Operation(description = "修改用户密码")
     @ApiOperationLog(description = "修改用户密码")
+    @RequiresPermission(PermissionConstants.User.UPDATE_PASSWD)
     public Response updatePassword(@RequestBody @Validated UpdateAdminUserPasswordReqVO updateAdminUserPasswordReqVO) {
         return userService.updatePassword(updateAdminUserPasswordReqVO);
     }
@@ -82,6 +84,7 @@ public class AdminUserController {
     @PostMapping("/user/role/change")
     @Operation(description = "修改用户的角色")
     @ApiOperationLog(description = "修改用户的角色")
+    @RequiresPermission(PermissionConstants.User.OTHER)
     public Response changeRoleUser(@RequestBody @Validated ChangeUserRoleReqVO reqVO) {
         return adminRoleService.changeUserRole(reqVO);
     }

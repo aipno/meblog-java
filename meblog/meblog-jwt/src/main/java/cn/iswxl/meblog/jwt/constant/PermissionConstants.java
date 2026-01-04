@@ -30,6 +30,9 @@ public interface PermissionConstants {
         String CREATE = "create";
         String UPDATE = "update";
         String DELETE = "delete";
+        String LIST = "list";
+        String PAGE = "page";
+        String SEARCH = "search";
     }
 
     // 模块：博客设置信息
@@ -52,11 +55,14 @@ public interface PermissionConstants {
         String CATALOG_UPDATE = "catalog:update";
     }
 
-    // 模块：图片
-    interface Image {
+    // 模块：文件
+    interface File {
         String BASE = "admin:image";
         String UPLOAD = "upload";
         String LIST = "list";
+        String IMAGE_LIST = "image:list";
+        String PAGE = "page";
+        String DELETE = "delete";
     }
 
     // 模块：用户
@@ -64,6 +70,7 @@ public interface PermissionConstants {
         String BASE = "admin:user";
         String LIST = "list";
         String OTHER = "other";
+        String UPDATE_PASSWD = "update:password";
     }
 
     // 模块：权限
@@ -77,7 +84,8 @@ public interface PermissionConstants {
     interface Role {
         String BASE = "admin:role";
         String LIST = "list";
-        String OTHER = "other";
+        String LIST_ALL = "list:all";
+        String UPDETE_PERMISSION = "updete:permission";
     }
 
     // 模块：仪表盘

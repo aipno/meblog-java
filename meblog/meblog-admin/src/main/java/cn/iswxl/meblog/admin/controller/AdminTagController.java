@@ -39,6 +39,7 @@ public class AdminTagController {
     @PostMapping("/list")
     @Operation(description = "标签分页数据获取")
     @ApiOperationLog(description = "标签分页数据获取")
+    @RequiresPermission(PermissionConstants.Tag.PAGE)
     public PageResponse findTagPageList(@RequestBody @Validated FindTagPageListReqVO findTagPageListReqVO) {
         return tagService.findTagPageList(findTagPageListReqVO);
     }
@@ -62,6 +63,7 @@ public class AdminTagController {
     @PostMapping("/search")
     @Operation(description = "标签模糊查询")
     @ApiOperationLog(description = "标签模糊查询")
+    @RequiresPermission(PermissionConstants.Tag.SEARCH)
     public Response searchTag(@RequestBody @Validated SearchTagReqVO searchTagReqVO) {
         return tagService.searchTag(searchTagReqVO);
     }
@@ -69,6 +71,7 @@ public class AdminTagController {
     @PostMapping("/select/list")
     @Operation(description = "查询标签 Select 列表数据")
     @ApiOperationLog(description = "查询标签 Select 列表数据")
+    @RequiresPermission(PermissionConstants.Tag.LIST)
     public Response findTagSelectList() {
         return tagService.findTagSelectList();
     }

@@ -51,7 +51,6 @@ public class PermissionValidatorRunner implements CommandLineRunner {
         });
 
         // 2. 查询数据库中存在的所有权限
-        // 假设 PermissionDO 有 permCode 字段
         List<PermissionDO> dbPermissionList = permissionMapper.selectList(null);
         Set<String> dbPermissions = dbPermissionList.stream()
                 .map(PermissionDO::getPermCode)
@@ -65,17 +64,94 @@ public class PermissionValidatorRunner implements CommandLineRunner {
             }
         }
 
-        // 4. 报警或报错
+        // 4. 自动创建缺失的权限
         if (!missingPermissions.isEmpty()) {
-            log.error("======================================================");
-            log.error("【严重警告】检测到代码中定义了数据库中不存在的权限码！");
-            log.error("请立即在数据库 t_permission 表中添加以下权限：");
-            missingPermissions.forEach(p -> log.error("- {}", p));
-            log.error("======================================================");
-            // 如果你想严格一点，可以直接抛出异常阻止项目启动
-            // throw new RuntimeException("权限配置不一致，启动终止");
+            log.warn("======================================================");
+            log.warn("检测到代码中定义了数据库中不存在的权限码，开始自动创建：");
+            missingPermissions.forEach(p -> log.warn("- {}", p));
+            log.warn("======================================================");
+
+            // 批量创建缺失的权限
+            List<PermissionDO> permissionsToCreate = missingPermissions.stream()
+                    .map(permCode -> {
+                        return PermissionDO.builder()
+                                .permCode(permCode)
+                                .permName(generatePermName(permCode)) // 生成权限名称
+                                .module("blog")
+                                .description("自动创建的权限: " + permCode) // 权限描述
+                                .build();
+                    })
+                    .toList();
+
+            // 批量插入到数据库
+            for (PermissionDO permission : permissionsToCreate) {
+                permissionMapper.insert(permission);
+            }
+
+            log.info("成功创建了 {} 个缺失的权限", missingPermissions.size());
         } else {
             log.info("权限校验通过，数据库与代码一致。");
         }
     }
+
+    /**
+     * 根据权限码生成权限名称
+     */
+    private String generatePermName(String permCode) {
+        // 将权限码转换为可读的权限名称
+        // 例如: user:add -> 用户添加, article:view -> 文章查看
+        String[] parts = permCode.split(":");
+        if (parts.length >= 2) {
+            String resource = parts[0];
+            String action = parts[1];
+
+            // 可以根据实际业务需求调整转换逻辑
+            String resourceCN = getResourceName(resource);
+            String actionCN = getActionName(action);
+
+            return resourceCN + actionCN;
+        }
+        return permCode;
+    }
+
+    /**
+     * 获取资源名称的中文描述
+     */
+    private String getResourceName(String resource) {
+        switch (resource) {
+            case "user":
+                return "用户";
+            case "article":
+                return "文章";
+            case "comment":
+                return "评论";
+            case "permission":
+                return "权限";
+            case "role":
+                return "角色";
+            default:
+                return resource;
+        }
+    }
+
+    /**
+     * 获取操作名称的中文描述
+     */
+    private String getActionName(String action) {
+        switch (action) {
+            case "add":
+                return "添加";
+            case "edit":
+                return "编辑";
+            case "delete":
+                return "删除";
+            case "view":
+                return "查看";
+            case "list":
+                return "列表";
+            default:
+                return action;
+        }
+    }
+
 }

@@ -13,7 +13,7 @@
     <artifactId>meblog</artifactId>
     <version>${revision}</version>
     <name>meblog</name>
-    <description>前后端分离博客 Meblog (重构版)</description>
+    <description>前后端分离博客 Meblog </description>
     <packaging>pom</packaging>
 
     <modules>
@@ -25,7 +25,7 @@
     </modules>
 
     <properties>
-        <revision>0.8.2</revision>
+        <revision>0.5.0</revision>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
